@@ -5,7 +5,6 @@
   "author": "Alli Smith <hailalli@gmail.com>",
   "description": "Chorebot helps us know what our chores are and helps with trades",
   "dependencies": {
-    "coffeescript": "1.12.7",
     "hubot": "^2.19.0",
     "hubot-diagnostics": "0.0.2",
     "hubot-google-images": "^0.2.7",
@@ -21,6 +20,6 @@
     "hubot-slack": "^4.5.1"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "10.4.1"
   }
 }
