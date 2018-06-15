@@ -7,11 +7,23 @@
 #   Uncomment the ones you want to try and experiment with.
 #
 #   These are from the scripting documentation: https://github.com/github/hubot/blob/master/docs/scripting.md
+moment = require 'moment'
 
 module.exports = (robot) ->
 
  robot.hear /badger/i, (res) ->
    res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
+
+ robot.hear /weekly chores/i, (res) ->
+   roommates = ['Alli', 'Meg', 'Robin', 'Gregg', 'Eric']
+   weeklyChores = [
+      'vacuum'
+      'sweep and mop'
+      'kitchen surfaces'
+      'take the trash out'
+      'seasonal'
+   ]
+   res.send (roommates[((moment().week() + i) % 5)] + ": " + weeklyChores[i] for chore, i in weeklyChores).toString()
 
  robot.respond /open the (.*) doors/i, (res) ->
    doorType = res.match[1]
