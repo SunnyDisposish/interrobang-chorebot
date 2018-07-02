@@ -1,33 +1,40 @@
 moment = require 'moment'
 
-module.exports = (robot) ->
-  roommates = ['Gregg', 'Alli', 'Meg', 'Eric', 'Robin']
+ROOMMATES = ['Gregg', 'Alli', 'Meg', 'Eric', 'Robin']
+SEASONAL_CHORE = "Pick up the apples"
+WEEKLY_CHORES = ['vacuum'
+                 'sweep and mop'
+                 'kitchen surfaces'
+                 'take the trash out'
+                 SEASONAL_CHORE]
+
+MONTHLY_CHORES = ['Baseboards & cobwebs',
+                 'Dusting & surface cleaning',
+                 'Doors, door handles, light switches']
+
+weekly_assignments = ->
   week = moment().week()
+  assignments = {}
+  for chore, i in WEEKLY_CHORES
+    assignments[ROOMMATES[((week + i) % ROOMMATES.length)]] = WEEKLY_CHORES[i]
+  assignments
 
-  robot.hear /weekly chores/i, (res) ->
-    weeklyChores = [
-      'vacuum'
-      'sweep and mop'
-      'kitchen surfaces'
-      'take the trash out'
-      'seasonal'
-    ]
-    assignments = {}
-    for chore, i in weeklyChores
-      assignments[roommates[((week + i) % roommates.length)]] = weeklyChores[i]
-    res.send "#{k}: #{v}\n" for k, v of assignments
 
+monthly_assignments = ->
   month = moment().month()
+  BATHROOMS = [['Gregg', 'Meg'], ['Alli', 'Eric', 'Robin']]
+  assignments = {}
+  bathroomDuty = (bath[month % bath.length] for bath in BATHROOMS)
+  for roommate in bathroomDuty
+    assignments[roommate] = 'Your bathroom'
+  otherChores = (roommate for roommate in ROOMMATES when roommate not in bathroomDuty)
+  for roommate, i in otherChores
+    assignments[roommate] = MONTHLY_CHORES[(month + i) % MONTHLY_CHORES.length]
+  assignments
+
+module.exports = (robot) ->
+  robot.hear /weekly chores/i, (res) ->
+    res.send "#{k}: #{v}\n" for k, v of weekly_assignments()
+
   robot.hear /monthly chores/i, (res) ->
-    baths = [['Gregg', 'Meg'], ['Alli', 'Eric', 'Robin']]
-    monthlyChores = ['Baseboards & cobwebs',
-                     'Dusting & surface cleaning',
-                     'Doors, door handles, light switches']
-    assignments = {}
-    bathroomDuty = (bath[month % bath.length] for bath in baths)
-    for roommate in bathroomDuty
-      assignments[roommate] = 'Your bathroom'
-    otherChores = (roommate for roommate in roommates when roommate not in bathroomDuty)
-    for roommate, i in otherChores
-      assignments[roommate] ?= monthlyChores[(month + i) % monthlyChores.length]
-    res.send "#{k}: #{v}\n" for k, v of assignments
+    res.send "#{k}: #{v}\n" for k, v of monthly_assignments()
